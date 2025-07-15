@@ -1,0 +1,24 @@
+
+- name: Capture post-upgrade Arch packages to JSON
+  when: ansible_os_family == "Archlinux"
+  ansible.builtin.shell: |
+    expac -Q '{"name":"%n","version":"%v"}' | jq -s '.' > /tmp/updated-{{ inventory_hostname }}.json
+- name: Compare and save list of upgraded Arch packages
+  when: ansible_os_family == "Archlinux"
+  ansible.builtin.shell: |
+    jq --argfile a /tmp/current-{{ inventory_hostname }}.json \
+       --argfile b /tmp/updated-{{ inventory_hostname }}.json \
+       -n '
+       $a as $old |
+       $b as $new |
+       [ $new[] |
+         . as $pkg |
+         ($old[] | select(.name == $pkg.name) | select(.version != $pkg.version)) ]' \
+       > /tmp/upgraded-{{ inventory_hostname }}.json
+  register: upgrade_diff
+- name: Fetch upgraded JSON files from Arch hosts
+  when: ansible_os_family == "Archlinux"
+  fetch:
+    src: /tmp/upgraded-{{ inventory_hostname }}.json
+    dest: ./upgraded/
+    flat: yes
