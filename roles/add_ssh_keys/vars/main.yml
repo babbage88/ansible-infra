@@ -1,0 +1,5 @@
+---
+ssh_user: "ansible" # The user to add keys for
+ssh_keys_urls: # List of URLs serving the public SSH keys
+  - "http://10.0.1.44/id_ed25519.pub"
+  - "http://10.0.1.44/trahdev01_id_ed25519.pub"
