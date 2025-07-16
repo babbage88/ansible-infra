@@ -1,7 +1,11 @@
 ---
-- name: Ensure .ssh directory exists for {{ ssh_user }}
+- name: Determine home directory for {{ ssh_user }}
+  ansible.builtin.set_fact:
+    ssh_home: "{{ '/root' if ssh_user == 'root' else '/home/' + ssh_user }}"
+
+- name: Ensure .ssh directory exists
   ansible.builtin.file:
-    path: "/home/{{ ssh_user }}/.ssh"
+    path: "{{ ssh_home }}/.ssh"
     state: directory
     owner: "{{ ssh_user }}"
     group: "{{ ssh_user }}"
