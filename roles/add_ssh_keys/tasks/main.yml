@@ -1,20 +1,38 @@
 ---
-- name: Determine home directory for {{ ssh_user }}
-  ansible.builtin.set_fact:
-    ssh_home: "{{ '/root' if ssh_user == 'root' else '/home/' + ssh_user }}"
+- name: Check if users exist on target system
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ item.user }}"
+  loop: "{{ ssh_key_users }}"
+  register: existing_users
+  ignore_errors: true
 
-- name: Ensure .ssh directory exists
+- name: Ensure .ssh directory exists for each user (only if user exists)
   ansible.builtin.file:
-    path: "{{ ssh_home }}/.ssh"
+    path: "{{ '/root' if item.user == 'root' else '/home/' + item.user }}/.ssh"
     state: directory
-    owner: "{{ ssh_user }}"
-    group: "{{ ssh_user }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
     mode: "0700"
+  loop: "{{ ssh_key_users }}"
+  when: >
+    item.user == 'root' or
+    (existing_users.results
+      | selectattr('item.user', 'equalto', item.user)
+      | selectattr('failed', 'equalto', false)
+      | list
+      | length > 0)
 
-- name: Add SSH keys to authorized_keys for {{ ssh_user }}
+- name: Add SSH keys to each user's authorized_keys (only if user exists)
   ansible.posix.authorized_key:
-    user: "{{ ssh_user }}"
+    user: "{{ item.0.user }}"
     state: present
-    key: "{{ lookup('url', item) }}"
-  loop: "{{ ssh_keys_urls }}"
-
+    key: "{{ lookup('url', item.1, split_lines=false) }}"
+  loop: "{{ ssh_key_users | subelements('keys') }}"
+  when: >
+    item.0.user == 'root' or
+    (existing_users.results
+      | selectattr('item.user', 'equalto', item.0.user)
+      | selectattr('failed', 'equalto', false)
+      | list
+      | length > 0)
