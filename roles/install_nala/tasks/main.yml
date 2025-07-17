@@ -1,0 +1,17 @@
+- name: Installing nala - a better ui for APT on debian nodes
+  debug:
+    msg: |
+      Found Debian based OS in inventory:
+       === {{ inventory_hostname }} ===
+  when: ansible_os_family == "Debian"
+
+- name: Update apt package cache, eg "apt-get update"
+  ansible.builtin.apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Ensuring that the nala package is installed
+  ansible.builtin.apt:
+    name: nala
+    state: present
+  when: ansible_os_family == "Debian"

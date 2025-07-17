@@ -1,0 +1,8 @@
+dev_server_users:
+- {username: jtrahan, description: 'Justin Trahan', uid: 1000, groups: ['sudo', 'admin'], shell: "/bin/bash", nopw_sudo: true}
+- {username: devops, description: 'Service account for automation', uid: 2002, groups: ['sudo', 'admin'], shell: "/bin/bash", nopw_sudo: true}
+
+ssh_keys:
+- {user: jtrahan, auth_keys: ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFYrAFrBHcxo0UytpBz972sErElpb0zYAxmqafSPi4oC jtrahan@trahdevlp2", "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAkSxvL74Se111NzT1hsFcFk7R2YTRTOVmhbOjJVaYuz justin.m.trahan@outlook.com"]}
+- {user: jtrahan, auth_keys: ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFYrAFrBHcxo0UytpBz972sErElpb0zYAxmqafSPi4oC jtrahan@trahdevlp2", "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAkSxvL74Se111NzT1hsFcFk7R2YTRTOVmhbOjJVaYuz justin.m.trahan@outlook.com"]}
+
