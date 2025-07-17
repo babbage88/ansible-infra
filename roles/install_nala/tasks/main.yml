@@ -8,10 +8,12 @@
 - name: Update apt package cache, eg "apt-get update"
   ansible.builtin.apt:
     update_cache: yes
+  become: true
   when: ansible_os_family == "Debian"
 
 - name: Ensuring that the nala package is installed
   ansible.builtin.apt:
     name: nala
     state: present
+  become: true
   when: ansible_os_family == "Debian"
