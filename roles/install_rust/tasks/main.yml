@@ -1,0 +1,92 @@
+- name: Install rustup system-wide
+  ansible.builtin.shell: |
+    export CARGO_HOME=/usr/local/cargo
+    export RUSTUP_HOME=/usr/local/rustup
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  args:
+    creates: "/usr/local/cargo/bin/rustc"
+
+- name: Ensure Rust system-wide in PATH
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/rust.sh
+    line: 'export PATH=$PATH:/usr/local/cargo/bin'
+    create: yes
+    mode: '0755'
+
+- name: Set Zig OS and architecture
+  set_fact:
+    zig_os: "{{ zig_os_map[ansible_system] | default('linux') }}"
+    zig_arch: "{{ zig_arch_map[ansible_architecture] | default('x86_64') }}"
+    zig_file: "zig-{{ zig_os }}-{{ zig_arch }}-{{ zig_version }}"
+
+### ───────────────────────────────
+### ✅ INSTALL ZIG
+### ───────────────────────────────
+
+- name: Download Zig tarball
+  ansible.builtin.get_url:
+    url: "{{ zig_base_url }}/{{ zig_version }}/{{ zig_file }}.tar.xz"
+    dest: "/tmp/{{ zig_file }}.tar.xz"
+    mode: '0644'
+
+- name: Remove old Zig
+  ansible.builtin.file:
+    path: /usr/local/zig
+    state: absent
+
+- name: Extract Zig to /usr/local
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ zig_file }}.tar.xz"
+    dest: /usr/local
+    remote_src: yes
+
+- name: Rename Zig folder to /usr/local/zig
+  ansible.builtin.command: mv "/usr/local/{{ zig_file }}" /usr/local/zig
+  args:
+    creates: /usr/local/zig
+
+- name: Ensure Zig in PATH
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/zig.sh
+    line: 'export PATH=$PATH:/usr/local/zig'
+    create: yes
+    mode: '0755'
+
+### ───────────────────────────────
+### ✅ INSTALL NODEJS
+### ───────────────────────────────
+
+- name: Set Node.js OS and architecture
+  set_fact:
+    node_os: "{{ node_os_map[ansible_system] | default('linux') }}"
+    node_arch: "{{ node_arch_map[ansible_architecture] | default('x64') }}"
+    node_file: "node-v{{ node_version }}-{{ node_os }}-{{ node_arch }}"
+
+- name: Download Node.js tarball
+  ansible.builtin.get_url:
+    url: "{{ node_base_url }}/v{{ node_version }}/{{ node_file }}.tar.xz"
+    dest: "/tmp/{{ node_file }}.tar.xz"
+    mode: '0644'
+
+- name: Remove old Node.js
+  ansible.builtin.file:
+    path: /usr/local/node
+    state: absent
+
+- name: Extract Node.js to /usr/local/node
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ node_file }}.tar.xz"
+    dest: /usr/local
+    remote_src: yes
+
+- name: Rename Node.js folder to /usr/local/node
+  ansible.builtin.command: mv "/usr/local/{{ node_file }}" /usr/local/node
+  args:
+    creates: /usr/local/node
+
+- name: Ensure Node.js in PATH
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/node.sh
+    line: 'export PATH=$PATH:/usr/local/node/bin'
+    create: yes
+    mode: '0755'
