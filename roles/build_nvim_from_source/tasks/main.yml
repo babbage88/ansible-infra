@@ -9,6 +9,8 @@
     name:
       - epel-release
     state: present
+    enablerepo:
+      - epel
   when: ansible_os_family == "RedHat"
   become: true
 
