@@ -12,7 +12,22 @@
 
 - name: Install build requirements for RH based distros
   ansible.builtin.dnf:
-    name: "{{ rhel_packages }}"
+    name: 
+    - git
+    - ninja-build 
+    - libtool 
+    - autoconf 
+    - automake 
+    - cmake 
+    - gcc
+    - gcc-c++ 
+    - make 
+    - pkgconfig 
+    - unzip 
+    - patch 
+    - gettext 
+    - curl
+    - fontconfig
     state: present
   when: ansible_os_family == "RedHat"
   become: true
@@ -25,7 +40,21 @@
 
 - name: Install build requirements for Debian Based Systems
   ansible.builtin.apt:
-    name: "{{ debian_packages }}"
+    name: 
+    - git
+    - ninja-build 
+    - gettext 
+    - libtool 
+    - libtool-bin 
+    - autoconf 
+    - automake 
+    - cmake 
+    - g++ 
+    - pkg-config 
+    - unzip 
+    - curl 
+    - doxygen
+    - fontconfig
     state: present
   when: ansible_os_family == "Debian"
   become: true
