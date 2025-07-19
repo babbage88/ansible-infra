@@ -4,16 +4,6 @@
   when: ansible_os_family == "RedHat"
   become: true
 
-- name: Install/Enabale EPEL (epel-release)
-  ansible.builtin.dnf:
-    name:
-      - epel-release
-    state: present
-    enablerepo:
-      - epel
-  when: ansible_os_family == "RedHat"
-  become: true
-
 - name: Update package cache
   ansible.builtin.dnf:
     update_cache: true
