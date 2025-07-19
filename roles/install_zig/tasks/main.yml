@@ -1,3 +1,10 @@
+---
+- name: Set Zig OS and architecture
+  set_fact:
+    zig_os: "{{ zig_os_map[ansible_system] | default('linux') }}"
+    zig_arch: "{{ zig_arch_map[ansible_architecture] | default('x86_64') }}"
+    zig_file: "zig-{{ zig_os }}-{{ zig_arch }}-{{ zig_version }}"
+
 - name: Download Zig tarball
   ansible.builtin.get_url:
     url: "{{ zig_base_url }}/{{ zig_version }}/{{ zig_file }}.tar.xz"
@@ -9,7 +16,7 @@
     path: /usr/local/zig
     state: absent
 
-- name: Extract Zig to /usr/local
+- name: Extract Zig tarball to /usr/local
   ansible.builtin.unarchive:
     src: "/tmp/{{ zig_file }}.tar.xz"
     dest: /usr/local
@@ -20,7 +27,7 @@
   args:
     creates: /usr/local/zig
 
-- name: Ensure Zig in PATH
+- name: Ensure Zig binary in PATH
   ansible.builtin.lineinfile:
     path: /etc/profile.d/zig.sh
     line: 'export PATH=$PATH:/usr/local/zig'
