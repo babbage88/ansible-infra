@@ -3,6 +3,10 @@
   set_fact:
     zig_os: "{{ zig_os_map[ansible_system] | default('linux') }}"
     zig_arch: "{{ zig_arch_map[ansible_architecture] | default('x86_64') }}"
+    
+
+- name: Set Zig Download URL File
+  set_fact:
     zig_file: "zig-{{ zig_os }}-{{ zig_arch }}-{{ zig_version }}"
 
 - name: Download Zig tarball
