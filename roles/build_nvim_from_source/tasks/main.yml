@@ -12,25 +12,8 @@
 
 - name: Install build requirements for RH based distros
   ansible.builtin.dnf:
-    name: 
-    - git
-    - ninja-build 
-    - libtool 
-    - autoconf 
-    - automake 
-    - cmake 
-    - gcc
-    - gcc-c++ 
-    - make 
-    - pkgconfig 
-    - unzip 
-    - patch 
-    - gettext 
-    - curl
-    - fontconfig
+    name: "{{ rhel_packages }}"
     state: present
-    enablerepo:
-      - crb
   when: ansible_os_family == "RedHat"
   become: true
 
@@ -42,21 +25,7 @@
 
 - name: Install build requirements for Debian Based Systems
   ansible.builtin.apt:
-    name: 
-    - git
-    - ninja-build 
-    - gettext 
-    - libtool 
-    - libtool-bin 
-    - autoconf 
-    - automake 
-    - cmake 
-    - g++ 
-    - pkg-config 
-    - unzip 
-    - curl 
-    - doxygen
-    - fontconfig
+    name: "{{ debian_packages }}"
     state: present
   when: ansible_os_family == "Debian"
   become: true
@@ -73,7 +42,6 @@
     clone: true
     dest: /tmp/neovim
     depth: 1
-    creates: /tmp/neovim
 
 - name: Build Neovim CMAKE_BUILD_TYPE=RelWithDebInfo
   ansible.builtin.command:
