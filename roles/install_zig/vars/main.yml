@@ -1,0 +1,41 @@
+# roles/install_golang/vars/main.yml
+
+### GO ###
+base_dl_url: "https://go.dev/dl/go"
+version: "1.24.5"
+
+go_os_map:
+  Linux: linux
+  Darwin: darwin
+  Windows: windows
+
+go_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+
+### RUST ###
+rust_version: "1.79.0"  # uses rustup, version ensures rustup updates
+
+### NODEJS ###
+node_version: "20.15.0"
+node_base_url: "https://nodejs.org/dist"
+
+node_os_map:
+  Linux: linux
+  Darwin: darwin
+
+node_arch_map:
+  x86_64: x64
+  aarch64: arm64
+
+### ZIG ###
+zig_version: "0.13.0"
+zig_base_url: "https://ziglang.org/download"
+
+zig_os_map:
+  Linux: linux
+  Darwin: macos
+
+zig_arch_map:
+  x86_64: x86_64
+  aarch64: aarch64
