@@ -1,0 +1,5 @@
+- hosts: all
+  gather_facts: true
+  roles:
+  - build_nvim_from_source
+

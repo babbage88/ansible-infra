@@ -1,0 +1,61 @@
+- name: Ensure the crb repository is enabled
+  community.general.dnf_config_manager:
+    name: crb
+    state: enabled
+  when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Install/Enabale EPEL (epel-release)
+  ansible.builtin.dnf:
+    name:
+      - epel-release
+    state: present
+  when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Update package cache
+  ansible.builtin.dnf:
+    update_cache: true
+  when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Install build requirements for RH based distros
+  ansible.builtin.dnf:
+    name: "{{ rhel_packages }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Install build requirements for Debian Based Systems
+  ansible.builtin.apt:
+    name: "{{ debian_packages }}"
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Remove any previous build artifacts
+  ansible.builtin.file:
+    path: /tmp/neovim
+    state: absent
+  become: true
+
+- name: Clone the neovim repository
+  ansible.builtin.git:
+    repo: "https://github.com/neovim/neovim.git"
+    clone: true
+    dest: /tmp/neovim
+    depth: 1
+    creates: /tmp/neovim
+
+- name: Build Neovim CMAKE_BUILD_TYPE=RelWithDebInfo
+  ansible.builtin.command:
+    chdir: /tmp/neovim
+    cmd: make CMAKE_BUILD_TYPE=RelWithDebInfo
+    
+

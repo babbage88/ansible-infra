@@ -1,0 +1,47 @@
+os: linux
+architecture: amd64
+base_dl_url: "https://go.dev/dl/go"
+version: "1.24.5"
+
+debian_packages:
+- git
+- ninja-build 
+- gettext 
+- libtool 
+- libtool-bin 
+- autoconf 
+- automake 
+- cmake 
+- g++ 
+- pkg-config 
+- unzip 
+- curl 
+- doxygen
+- fontconfig
+
+rhel_packages:
+- git
+- ninja-build 
+- libtool 
+- autoconf 
+- automake 
+- cmake 
+- gcc
+- gcc-c++ 
+- make 
+- pkgconfig 
+- unzip 
+- patch 
+- gettext 
+- curl
+- fontconfig
+
+# Maps Ansible facts to Go's naming convention
+go_os_map:
+  Linux: linux
+  Darwin: darwin
+  Windows: windows
+
+go_arch_map:
+  x86_64: amd64
+  aarch64: arm64
