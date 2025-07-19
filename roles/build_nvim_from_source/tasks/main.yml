@@ -29,6 +29,8 @@
     - curl
     - fontconfig
     state: present
+    enablerepo:
+      - crb
   when: ansible_os_family == "RedHat"
   become: true
 
